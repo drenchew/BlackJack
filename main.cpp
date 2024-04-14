@@ -62,36 +62,26 @@ public:
     Player(Deck* deck) : deck_interface(deck), _status(State::NO_STATUS) { lock_actions = false; }
 
     virtual void hit() override final {
-        if ((double_on_off != true) && (_status != State::BUST))
-        {
-            this->my_cards.emplace_back(deck_interface->get_card());
-            std::cout << *(my_cards.back());
-
-
-            if (my_cards.back()->get_symbol() != Symbols::ACE)
-            {
-                this->_score += my_cards.back()->get_card_val();
-                determine_status();
-                return;
-            } // testing 
-           
-        }
+       
     }
 
    
 
     virtual void check() override
     {
+        if (_score == 0) { return; }
+
         determine_status();
-        std::cout << "actions locked for check\n";
-        lock_actions = true;
     }
 
     void double_down()
     {
         hit();
-        lock_actions = true;
-        double_on_off = true;
+        if (_score < 21)
+        {
+            _status = State::DOUBLE;
+        }
+            
     }
     const State get_status() const
     {
