@@ -13,7 +13,7 @@
 
 class Card {
 public:
-    Card();
+    Card() = delete;
     Card(const Symbols& symbol, const Suits& suit);
 
     const Suits& get_suit() const { return _suit; }
@@ -24,8 +24,11 @@ public:
         if ((int)_symbol > 10) { return 10;}
         return (int)_symbol;
     }
+    void setRotation(float ang) { _cardSprite.setRotation(ang); }
+    void setPosition(const sf::Vector2f& pos) { _cardSprite.setPosition(pos); }
+    void scale(int a) { _cardSprite.setScale(a,a); }
 
-    void draw_card(sf::RenderWindow& window) const;
+    void draw_card(sf::RenderWindow& window) ;
 
     bool operator==(const Card& other) const;
     bool operator!=(const Card& other) const;

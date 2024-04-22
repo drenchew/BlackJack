@@ -1,3 +1,4 @@
+/*
 #include "defines.h"
 
 Symbols& operator++(Symbols& e) {
@@ -13,3 +14,4 @@ Suits& operator++(Suits& e) {
     e = static_cast<Suits>(temp);
     return e;
 }
+*/

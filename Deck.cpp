@@ -1,29 +1,26 @@
 #include "Deck.h"
+#include <iostream>
 
 
-Deck::Deck() {
-    _deck.reserve(52);
-    finished = false;
+
+Deck::Deck() : finished(false) {
+    // Reserve space for 52 cards
+    _deck.reserve(NUM_CARDS_IN_DECK);
 }
 
 void Deck::generate_deck2() {
+    // Generate all combinations of symbols and suits
     for (Symbols symbol = Symbols::ACE; symbol <= Symbols::KING; ++symbol) {
         for (Suits suit = Suits::CLUBS; suit <= Suits::SPADES; ++suit) {
             _deck.emplace_back(std::make_shared<Card>(symbol, suit));
         }
     }
+
+    // Shuffle the deck
     std::shuffle(_deck.begin(), _deck.end(), std::mt19937{ std::random_device{}() });
 
+    // Debug: Output the deck
     for (const auto& card : _deck) {
         std::cout << *card << std::endl;
     }
-}
-
-template<typename T>
-T Deck::random_int(int range) {
-    std::vector<int> v1(range);
-    std::iota(v1.begin(), v1.end(), 1);
-    std::shuffle(v1.begin(), v1.end(), std::mt19937{ std::random_device{}() });
-
-    return static_cast<T>(v1[0]);
 }

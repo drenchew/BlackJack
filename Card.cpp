@@ -1,10 +1,11 @@
 #include "Card.h"
 
 
-Card::Card() : _symbol(Symbols::NO_SYMBOL), _suit(Suits::NO_SUIT) {}
+//Card::Card() : _symbol(Symbols::NO_SYMBOL), _suit(Suits::NO_SUIT) {}
+
 
 Card::Card(const Symbols& symbol, const Suits& suit) {
-    _path = ".\\assets\\";
+    _path = ".\\assets\\cards\\";
 
     _suit = suit;
     _symbol = symbol;
@@ -76,12 +77,29 @@ Card::Card(const Symbols& symbol, const Suits& suit) {
     }
     _path += ".png";
 
-    _cardTexture.loadFromFile(_path);
-    _cardSprite.setTexture(_cardTexture);
+    try
+    {
+        _cardTexture.loadFromFile(_path);
+        _cardSprite.setTexture(_cardTexture);
+        
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "PROBLEM LOADING: " << e.what() << std::endl;
+    }
+
+   
 }
 
-void Card::draw_card(sf::RenderWindow& window) const {
+void Card::draw_card(sf::RenderWindow& window)  {
+    std::cout << "drawing a: " << this->_path << "\n";
+    setRotation(59);
+   // scale(0.9);
+    setPosition(sf::Vector2f(304, 66));
+    this->_cardSprite.setScale(0.18, 0.18);
     window.draw(_cardSprite);
+
+   
 }
 
 bool Card::operator==(const Card& other) const {
