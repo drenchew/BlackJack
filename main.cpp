@@ -1,7 +1,5 @@
 #include <SFML/Graphics.hpp>
 
-
-
 #include<thread>
 #include<mutex>
 #include<chrono>
@@ -12,91 +10,9 @@
 #include"Image.h"
 
 
+#include"Player.h"
+#include"Balance.h"
 
-
-
-
-class BaseGameLogic
-{
-public:
-    virtual void hit() = 0;
-    virtual void check() = 0;
-
-
-    virtual ~BaseGameLogic() = default;
-
-protected:
-    unsigned int _score=0;
-    unsigned int _second_score = 0;
-    std::vector<std::shared_ptr<Card>> my_cards;
-};
-
-class Balance
-{
-public:
-    void update_balance(const int bal) { _money = bal; }
-    bool check_valid(const int b = 0) const { return (_money - b) >= 0; }
-    
-
-private:
-
-    double _money = 100;
-};
-
-class Player final : public BaseGameLogic 
-{
-public:
-    bool lock_actions = false;
-
-    Player(Deck* deck) : deck_interface(deck), _status(State::NO_STATUS) { lock_actions = false; }
-
-    virtual void hit() override final {
-       
-    }
-
-   
-
-    virtual void check() override
-    {
-        if (_score == 0) { return; }
-
-        determine_status();
-    }
-
-    void double_down()
-    {
-        hit();
-        if (_score < 21)
-        {
-            _status = State::DOUBLE;
-        }
-            
-    }
-    const State get_status() const
-    {
-        return this->_status;
-    }
-
-    
-
-private:
-    void determine_status()
-    {
-        std::cout << "current score: " << _score << "\n";
-
-        if (_score == 21) { _status = State::BLACKJACK; }
-        else if (_score < 21) { _status = State::SUCCESS; }
-        else { _status = State::BUST;  }
-    }
-    
-private:
-    DeckInterface* deck_interface;
-    State _status;
-    Balance _balance;
-
-    bool double_on_off = false;
-    
-};
 
 
 
@@ -111,7 +27,6 @@ int main()
     sf::RenderWindow window (sf::VideoMode(1024, 720), "SFML works!");
  
     Deck d;
-   // d.generate_deck2();
     std::thread deck_thread(&Deck::generate_deck2, &d);
 
     Image bg(BUTTON::UNKNOWN,true);
@@ -152,23 +67,6 @@ int main()
     Image double_btn(BUTTON::DOUBLE_BTN);
 
    
-    // ".\\assets\\cards\\6_of_clubs.png"
-    // Load image
-    /*
-    sf::Texture texture;
-    if (!texture.loadFromFile(d.get_card()->get_path())) {
-        // Error handling if the image fails to load
-       //return EXIT_FAILURE;
-    }
-
-    // Create sprite and set its texture
-    sf::Sprite sprite;
-    sprite.setRotation(59);
-    sprite.setScale(0.2,0.2);
-    sprite.setPosition(304,75);
-    
-    sprite.setTexture(texture);
-    */
     bool isButtonClicked = false;
 
 
@@ -215,8 +113,9 @@ int main()
         bg.draw(window);
         
        // window.draw(sprite);
-        if (d.view_card()) { 
-         d.get_card()->draw_card(window); }
+        if (d.total_cards()) { 
+         d.get_card()->draw_card(window);
+        }
        
         
         std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 2 seconds
