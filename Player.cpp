@@ -5,29 +5,36 @@ Player::Player(Deck* deck) : deck_interface(deck), _status(State::NO_STATUS) {
     //lock_actions = false;
 }
 
-void Player::hit() {
+State Player::hit() {
     // Implement hit logic
+    this->_score +=
+    this->deck_interface->view_card()->get_card_val();
+   // this->deck_interface->get_card()->draw_card();
+
+   return determine_status();
 }
 
-void Player::check() {
+State Player::check() {
     if (_score == 0) {
-        return;
+        return State::NO_STATUS;
     }
-    determine_status();
+    return determine_status();
 }
 
-void Player::double_down() {
+State Player::double_down() {
     hit();
     if (_score < 21) {
         _status = State::DOUBLE;
     }
+
+    return determine_status();
 }
 
 const State Player::get_status() const {
     return _status;
 }
 
-void Player::determine_status() {
+State Player::determine_status() {
     std::cout << "current score: " << _score << "\n";
     if (_score == 21) {
         _status = State::BLACKJACK;
@@ -38,4 +45,5 @@ void Player::determine_status() {
     else {
         _status = State::BUST;
     }
+    return _status;
 }

@@ -7,8 +7,8 @@
 class BaseGameLogic
 {
 public:
-    virtual void hit() = 0;
-    virtual void check() = 0;
+    virtual State hit() = 0;
+    virtual State check() = 0;
     virtual ~BaseGameLogic() = default;
 
 protected:
