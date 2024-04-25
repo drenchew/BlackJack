@@ -17,6 +17,7 @@ public:
     virtual int total_cards() const = 0;
     virtual std::shared_ptr<Card> get_card() = 0;
     virtual std::shared_ptr<Card> view_card() const = 0;
+    inline virtual void pop_card() = 0;
     virtual ~DeckInterface() = default;
 };
 
@@ -27,6 +28,10 @@ public:
 
     virtual int total_cards() const override {
         return _deck.size();
+    }
+
+    inline virtual void pop_card() override{
+        this->_deck.pop_back();
     }
 
     virtual std::shared_ptr<Card> get_card() override {

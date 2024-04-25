@@ -30,7 +30,10 @@ int main()
     Image double_btn(BUTTON::DOUBLE_BTN);
 
 
+    std::vector<Player> players;
     Player p1(&d);
+
+    players.emplace_back(p1);
 
    
 
@@ -72,18 +75,18 @@ int main()
                     else if (double_btn.isClicked(mousePosition)) {
                         std::cout << "double clicked\n";
                         p1.double_down();
-
+                       
                     }
 
-                    std::cout << (int)p1.get_status()<< "\n";
-
+                    //std::cout << (int)p1.get_status()<< "\n";
+//#define continue break
                     switch (p1.get_status())
                     {
-                    case State::BUST: continue;
-                    case State::CHECK: continue;
-                    case State::DOUBLE: continue;
+                    case State::BUST: goto Busted;
+                    case State::CHECK:  goto Busted;
+                    case State::DOUBLE:  goto Busted;
                     }
-
+                    p1.deck_interface->pop_card();
                    
                 }
             }
@@ -109,6 +112,10 @@ int main()
        //c.draw_card(window);
         window.display();
     }
+
+Busted:
+    std::cout << "BUSTED\n";
+
 
  
   

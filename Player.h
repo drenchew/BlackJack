@@ -8,15 +8,18 @@ class Player final : public BaseGameLogic
 {
 public:
     Player(Deck* deck);
+    Player(Deck* deck, float x,float y);
     virtual State hit() override final;
     virtual State check() override;
     State double_down();
-    const State get_status() const;
 
+    virtual const State get_status() const;
+
+    DeckInterface* deck_interface;
 private:
     State determine_status();
 
-    DeckInterface* deck_interface;
+ 
     State _status;
     Balance _balance;
 
