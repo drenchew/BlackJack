@@ -5,27 +5,31 @@ Player::Player(Deck* deck) : deck_interface(deck), _status(State::NO_STATUS) {
     //lock_actions = false;
 }
 
-Player::Player(Deck* deck, float x, float y) : Player(deck) {
+Player::Player(Deck* deck, float x, float y,float rotation) : Player(deck) {
     _default_x = x;
     _default_y = y;
+    _rotation = rotation;
 }
 
 
 State Player::hit() {
     // Implement hit logic
-    this->my_cards.emplace_back(this->deck_interface->view_card());
-    if (deck_interface->view_card()->get_symbol() == Symbols::ACE)
-    {
-        int temp = _score + 11;
-        if (temp < 21) { 
-            _score += 11;
-            return determine_status();
-        }
-        
+    if (this->my_cards.emplace_back(
+        this->deck_interface->view_card())->get_symbol() == Symbols::ACE)
+    {   ++_aces;
+        _score += 11;
     }
-    this->_score +=
-    this->deck_interface->view_card()->get_card_val();
-   // this->deck_interface->get_card()->draw_card();
+    else {
+        _score += deck_interface->view_card()->get_card_val();
+    }
+   
+
+    while (_score > 21 && _aces > 0) {
+        _score -= 10; // Convert ace from 11 to 1
+        _aces--;
+    }
+    
+   
 
    return determine_status();
 }
@@ -43,7 +47,7 @@ State Player::double_down() {
         _status = State::DOUBLE;
     }
 
-    return determine_status();
+    return State::DOUBLE;
 }
 
  const State Player::get_status() const  {

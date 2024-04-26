@@ -13,10 +13,26 @@
 #include"Player.h"
 #include"Balance.h"
 
+inline void print(std::string& s) { std::cout << s << std::endl; }
+
+void drawScreen(sf::RenderWindow& window,std::vector<Image>& imgs, std::vector<Player>& players)
+{
+    for (auto& img : imgs)
+    {
+        img.draw(window);
+    }
+    for (auto& player : players)
+    {
+        
+    }
+}
 
 
 int main()
 {
+
+   uint16_t constexpr SHIFT = 30;
+  
 
    // srand(time(NULL));
     sf::RenderWindow window (sf::VideoMode(1024, 720), "SFML works!");
@@ -30,10 +46,59 @@ int main()
     Image double_btn(BUTTON::DOUBLE_BTN);
 
 
+    std::vector<Image> images;
+    images.emplace_back(bg);
+    images.emplace_back(check_btn);
+    images.emplace_back(hit_btn);
+    images.emplace_back(double_btn);
+
     std::vector<Player> players;
-    Player p1(&d);
+    Player p1(&d,304,66,59);
+
+
+
+
+   // bg.draw(window);
+
+    // window.draw(sprite);
+     //if (d.total_cards()) { 
+    //  d.get_card()->draw_card(window);
+    // }
+
+
+    //std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 2 seconds
+
+   /* hit_btn.draw(window);
+    check_btn.draw(window);
+    double_btn.draw(window);
+
+    window.display();*/
+
+   
+  // IMPLEMENT HIT FOR ACE WITH!
 
     players.emplace_back(p1);
+
+    deck_thread.join();
+
+    for (size_t i = 0; i < 5; i++)
+    {
+        window.clear();
+        for (size_t i = 0; i < players.size(); ++i)
+        {
+            
+            drawScreen(window,images,players);
+            players[i].hit();
+            players[i].drawHand(window);
+            window.display();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 2 seconds
+            players[i].deck_interface->pop_card();
+        }
+
+    }
+
+    std::cout << "AFTER FOR\n";
+    
 
    
 
@@ -41,7 +106,7 @@ int main()
     bool isButtonClicked = false;
 
 
-    deck_thread.join();
+   
     while (window.isOpen())
     {
         sf::Event event;
@@ -94,31 +159,33 @@ int main()
         }
 
         window.clear();
-        // Draw sprite instead of shape
-        bg.draw(window);
-        
-       // window.draw(sprite);
-        //if (d.total_cards()) { 
-       //  d.get_card()->draw_card(window);
-       // }
-       
-        
-        std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 2 seconds
+       // // Draw sprite instead of shape
+       // bg.draw(window);
+       // 
+       //// window.draw(sprite);
+       // //if (d.total_cards()) { 
+       ////  d.get_card()->draw_card(window);
+       //// }
+       //
+       // 
+       // std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 2 seconds
 
-        hit_btn.draw(window);
-        check_btn.draw(window);
-        double_btn.draw(window);
+       // hit_btn.draw(window);
+       // check_btn.draw(window);
+       // double_btn.draw(window);
+        drawScreen(window, images,players);
 
        //c.draw_card(window);
         window.display();
     }
 
 Busted:
+    window.clear();
     std::cout << "BUSTED\n";
 
 
  
-  
+   
 
     return 0;
 }

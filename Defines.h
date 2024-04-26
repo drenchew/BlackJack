@@ -3,7 +3,12 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-constexpr short NUM_CARDS_IN_DECK = 52;
+constexpr unsigned short NUM_CARDS_IN_DECK = 52;
+
+constexpr int SHIFT_X = -10; //-10
+constexpr int SHIFT_Y = -10; //-10
+
+constexpr int ROTATION_ANG = 10; // 10
 
 enum class Symbols
 {

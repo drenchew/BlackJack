@@ -93,9 +93,9 @@ Card::Card(const Symbols& symbol, const Suits& suit) {
 
 void Card::draw_card(sf::RenderWindow& window)  {
     std::cout << "drawing a: " << this->_path << "\n";
-    setRotation(59);
+    //setRotation(59);
    // scale(0.9);
-    setPosition(sf::Vector2f(304, 66));
+    //setPosition(sf::Vector2f(304, 66));
     this->_cardSprite.setScale(0.18, 0.18);
     window.draw(_cardSprite);
 
