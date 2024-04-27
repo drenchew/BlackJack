@@ -92,7 +92,7 @@ Card::Card(const Symbols& symbol, const Suits& suit) {
 }
 
 void Card::draw_card(sf::RenderWindow& window)  {
-    std::cout << "drawing a: " << this->_path << "\n";
+  //  std::cout << "drawing a: " << this->_path << "\n";
     //setRotation(59);
    // scale(0.9);
     //setPosition(sf::Vector2f(304, 66));

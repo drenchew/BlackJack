@@ -13,9 +13,10 @@
 #include"Player.h"
 #include"Balance.h"
 
-inline void print(std::string& s) { std::cout << s << std::endl; }
+template<typename T>
+inline void print(T s) { std::cout << s << std::endl; }
 
-void drawScreen(sf::RenderWindow& window,std::vector<Image>& imgs, std::vector<Player>& players)
+void drawScreen(sf::RenderWindow& window,std::vector<Image>& imgs, std::vector<Player*>& players)
 {
     for (auto& img : imgs)
     {
@@ -23,7 +24,24 @@ void drawScreen(sf::RenderWindow& window,std::vector<Image>& imgs, std::vector<P
     }
     for (auto& player : players)
     {
-        
+        player->drawHand(window);
+    }
+}
+
+void takeAction(BUTTON btn, std::vector<Player*> players)
+{
+    static volatile int playerNum = 0;
+    if (playerNum > players.size()) { throw std::out_of_range("Index out of bounds!"); }
+    switch (btn)
+    {
+    case BUTTON::HIT_BTN: players[playerNum]->hit();
+        break;
+    case BUTTON::CHECK_BTN: players[playerNum]->check(); playerNum++;
+        break;
+    case BUTTON::DOUBLE_BTN:  players[playerNum]->double_down(); playerNum++;
+        break;
+    case BUTTON::UNKNOWN: throw std::runtime_error("Something went wrong!");;
+        break;
     }
 }
 
@@ -52,51 +70,47 @@ int main()
     images.emplace_back(hit_btn);
     images.emplace_back(double_btn);
 
-    std::vector<Player> players;
-    Player p1(&d,304,66,59);
+    std::vector<Player*> players;
+
+
+    //Player p1(&d,304,66,59);
+  //  Player* p1 = new Player(&d, 320, 66, 59);
+ //  Player* p1 = new Player(&d, 320, 66, 50);
+   std::shared_ptr<Player> p1(new Player(&d, 320, 66, 50));
+   std::shared_ptr<Player> p2(new Player(&d, 490, 210, -10));
+   std::shared_ptr<Player> p3(new Player(&d, 707, 137, -70));
 
 
 
+  
 
-   // bg.draw(window);
-
-    // window.draw(sprite);
-     //if (d.total_cards()) { 
-    //  d.get_card()->draw_card(window);
-    // }
-
-
-    //std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 2 seconds
-
-   /* hit_btn.draw(window);
-    check_btn.draw(window);
-    double_btn.draw(window);
-
-    window.display();*/
-
-   
-  // IMPLEMENT HIT FOR ACE WITH!
-
-    players.emplace_back(p1);
+    players.emplace_back(p1.get());
+    players.emplace_back(p2.get());
+    players.emplace_back(p3.get());
 
     deck_thread.join();
 
-    for (size_t i = 0; i < 5; i++)
+    for (size_t i = 0; i < 2; i++)
     {
-        window.clear();
+       // window.clear();
         for (size_t i = 0; i < players.size(); ++i)
         {
             
             drawScreen(window,images,players);
-            players[i].hit();
-            players[i].drawHand(window);
+            
+            players[i]->hit();
+            players[i]->drawHand(window);
             window.display();
             std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 2 seconds
-            players[i].deck_interface->pop_card();
+
+            players[i]->deck_interface->pop_card();
+            print("TOTAL CARDS");
+            print(p1->totalCards());
+            print("\n");
         }
 
     }
-
+    //print(p1.totalCards());
     std::cout << "AFTER FOR\n";
     
 
@@ -121,61 +135,63 @@ int main()
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 
-                    // Check if the hit button is clicked
+                  
                     if (hit_btn.isClicked(mousePosition)) {
                         std::cout << "hit clicked\n";
-                        p1.hit();
-                        
+                       // p1->hit();
+                        takeAction(BUTTON::HIT_BTN, players);
+
+                       // p1.drawHand(window);
+                      //  window.display();
+                       // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
                     }
 
                     // Check if the check button is clicked
                     else if (check_btn.isClicked(mousePosition)) {
                         std::cout << "check clicked\n";
-                        p1.check();
-
+                       // p1->check();
+                       // 
+                        takeAction(BUTTON::CHECK_BTN, players);
+                      //  p1.drawHand(window);
+                       // window.display();
                     }
 
                     // Check if the double button is clicked
                     else if (double_btn.isClicked(mousePosition)) {
                         std::cout << "double clicked\n";
-                        p1.double_down();
-                       
+
+                        takeAction(BUTTON::DOUBLE_BTN, players);
+                       // p1->double_down();
+                        //p1->drawHand(window);
+                       // window.display();
                     }
 
                     //std::cout << (int)p1.get_status()<< "\n";
-//#define continue break
-                    switch (p1.get_status())
+
+                    switch (p1->get_status())
                     {
-                    case State::BUST: goto Busted;
-                    case State::CHECK:  goto Busted;
-                    case State::DOUBLE:  goto Busted;
+                   // case State::BUST: std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
+                   // case State::CHECK: std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
+                   // case State::DOUBLE:  std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
                     }
-                    p1.deck_interface->pop_card();
+                    p1->deck_interface->pop_card();
                    
                 }
             }
                
         }
 
-        window.clear();
-       // // Draw sprite instead of shape
-       // bg.draw(window);
-       // 
-       //// window.draw(sprite);
-       // //if (d.total_cards()) { 
-       ////  d.get_card()->draw_card(window);
-       //// }
-       //
-       // 
+
+       // window.clear();
+
        // std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 2 seconds
 
-       // hit_btn.draw(window);
-       // check_btn.draw(window);
-       // double_btn.draw(window);
-        drawScreen(window, images,players);
 
-       //c.draw_card(window);
+        drawScreen(window, images,players);
+        p1->drawHand(window);
+
+
         window.display();
     }
 
@@ -183,6 +199,7 @@ Busted:
     window.clear();
     std::cout << "BUSTED\n";
 
+    //delete p1;
 
  
    

@@ -14,8 +14,8 @@ Player::Player(Deck* deck, float x, float y,float rotation) : Player(deck) {
 
 State Player::hit() {
     // Implement hit logic
-    if (this->my_cards.emplace_back(
-        this->deck_interface->view_card())->get_symbol() == Symbols::ACE)
+    this->my_cards.emplace_back(this->deck_interface->view_card());
+    if (this->deck_interface->view_card()->get_symbol() == Symbols::ACE)
     {   ++_aces;
         _score += 11;
     }
@@ -38,7 +38,7 @@ State Player::check() {
     if (_score == 0) {
         return State::NO_STATUS;
     }
-    return determine_status();
+    return State::CHECK;
 }
 
 State Player::double_down() {
