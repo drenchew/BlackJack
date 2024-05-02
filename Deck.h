@@ -26,6 +26,18 @@ public:
     Deck();
     void generate_deck2();
 
+    //TEST CASES
+     
+    void test_deck() {
+        for (size_t i = 0; i < 20; i++)
+        {
+            this->_deck.push_back(std::make_shared<Card>(Symbols::THREE, Suits::DIAMONDS));
+        }
+       // this->_deck.push_back(std::make_shared<Card>(Symbols::THREE,Suits::DIAMONDS));
+    }
+
+    //!TEST CASES
+
     virtual int total_cards() const override {
         return _deck.size();
     }

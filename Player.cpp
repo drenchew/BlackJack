@@ -50,7 +50,7 @@ State Player::double_down() {
     return State::DOUBLE;
 }
 
- const State Player::get_status() const  {
+ const State Player::getStatus() const  {
      return _status;
 }
 
@@ -60,7 +60,7 @@ State Player::determine_status() {
         _status = State::BLACKJACK;
     }
     else if (_score < 21) {
-        _status = State::SUCCESS;
+        _status = State::HIT;
     }
     else {
         _status = State::BUST;

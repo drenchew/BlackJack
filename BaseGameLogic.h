@@ -4,15 +4,16 @@
 #include <memory>
 #include "Card.h"
 
-class BaseGameLogic
+class User
 {
 public:
     virtual State hit() = 0;
     virtual State check() = 0;
     inline virtual int totalCards() { return this->my_cards.size(); }
-    virtual const State get_status() const = 0;
+    virtual const State getStatus() const = 0;
+    virtual void setStatus(const State state)  = 0;
   //  virtual void drawHand(sf::RenderWindow& win)
-    virtual ~BaseGameLogic() = default;
+    virtual ~User() = default;
 
     float _default_x = 0;
     float _default_y = 0;

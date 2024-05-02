@@ -13,14 +13,34 @@
 #include"Player.h"
 #include"Balance.h"
 
-template<typename T>
-inline void print(T s) { std::cout << s << std::endl; }
 
-void drawScreen(sf::RenderWindow& window,std::vector<Image>& imgs, std::vector<Player*>& players)
+typedef std::vector< std::shared_ptr<Player>> PLAYERS;
+
+
+
+static volatile int playerNum = 0;
+
+void initPlayers(std::vector< std::shared_ptr<Player>>& players,Deck& d) {
+    players.push_back(std::make_shared<Player>(&d, 320, 66, 50));
+    players.push_back(std::make_shared<Player>(&d, 490, 210, -10));
+    players.emplace_back(std::make_shared<Player>(&d, 707, 137, -70)); 
+}
+
+void initImages(std::vector<std::shared_ptr<Image>>& images)
+{
+    images.push_back(std::make_shared<Image>(BUTTON::UNKNOWN, true)); // background
+    images.push_back(std::make_shared<Image>(BUTTON::CHECK_BTN));  
+    images.push_back(std::make_shared<Image>(BUTTON::HIT_BTN));
+    images.push_back(std::make_shared<Image>(BUTTON::DOUBLE_BTN));
+}
+
+
+void drawScreen(sf::RenderWindow& window, std::vector<std::shared_ptr<Image>>& imgs,
+    std::vector< std::shared_ptr<Player>>& players)
 {
     for (auto& img : imgs)
     {
-        img.draw(window);
+        img->draw(window);
     }
     for (auto& player : players)
     {
@@ -28,91 +48,75 @@ void drawScreen(sf::RenderWindow& window,std::vector<Image>& imgs, std::vector<P
     }
 }
 
-void takeAction(BUTTON btn, std::vector<Player*> players)
+void takeAction(BUTTON btn, std::vector<std::shared_ptr<Player>>& players)
 {
-    static volatile int playerNum = 0;
-    if (playerNum > players.size()) { throw std::out_of_range("Index out of bounds!"); }
+  //  static volatile int playerNum = 0;
+    
+    if (playerNum >= players.size()) { return; }
+    
     switch (btn)
     {
-    case BUTTON::HIT_BTN: players[playerNum]->hit();
+    case BUTTON::HIT_BTN: 
+       if((players[playerNum]->getStatus() == State::DOUBLE)){return;}
+        players[playerNum]->hit();
         break;
     case BUTTON::CHECK_BTN: players[playerNum]->check(); playerNum++;
         break;
-    case BUTTON::DOUBLE_BTN:  players[playerNum]->double_down(); playerNum++;
+    case BUTTON::DOUBLE_BTN: 
+        if (players[playerNum]->getStatus() != State::NO_STATUS) { return; }
+        players[playerNum]->double_down(); playerNum++;
         break;
     case BUTTON::UNKNOWN: throw std::runtime_error("Something went wrong!");;
         break;
     }
+    if (playerNum >= players.size()) { playerNum--; }
 }
 
 
 int main()
 {
-
-   uint16_t constexpr SHIFT = 30;
-  
-
-   // srand(time(NULL));
     sf::RenderWindow window (sf::VideoMode(1024, 720), "SFML works!");
  
     Deck d;
     std::thread deck_thread(&Deck::generate_deck2, &d);
 
-    Image bg(BUTTON::UNKNOWN,true);
-    Image check_btn(BUTTON::CHECK_BTN);
-    Image hit_btn(BUTTON::HIT_BTN);
-    Image double_btn(BUTTON::DOUBLE_BTN);
+
+    std::vector<std::shared_ptr<Image>> images;
+    initImages(images);
 
 
-    std::vector<Image> images;
-    images.emplace_back(bg);
-    images.emplace_back(check_btn);
-    images.emplace_back(hit_btn);
-    images.emplace_back(double_btn);
-
-    std::vector<Player*> players;
-
-
-    //Player p1(&d,304,66,59);
-  //  Player* p1 = new Player(&d, 320, 66, 59);
- //  Player* p1 = new Player(&d, 320, 66, 50);
-   std::shared_ptr<Player> p1(new Player(&d, 320, 66, 50));
-   std::shared_ptr<Player> p2(new Player(&d, 490, 210, -10));
-   std::shared_ptr<Player> p3(new Player(&d, 707, 137, -70));
-
-
-
-  
-
-    players.emplace_back(p1.get());
-    players.emplace_back(p2.get());
-    players.emplace_back(p3.get());
+    std::vector< std::shared_ptr<Player>> players;
+    initPlayers(players,d);
+   
 
     deck_thread.join();
+    d.test_deck();
 
     for (size_t i = 0; i < 2; i++)
     {
-       // window.clear();
-        for (size_t i = 0; i < players.size(); ++i)
+        for (auto& player : players)
         {
-            
-            drawScreen(window,images,players);
-            
-            players[i]->hit();
-            players[i]->drawHand(window);
-            window.display();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 2 seconds
+            drawScreen(window, images, players);
 
-            players[i]->deck_interface->pop_card();
-            print("TOTAL CARDS");
-            print(p1->totalCards());
-            print("\n");
+            player->hit();
+            player->drawHand(window);
+            window.display();
+
+          //  std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for 2 seconds
+
+            player->deck_interface->pop_card();
         }
+       
+      
 
     }
     //print(p1.totalCards());
     std::cout << "AFTER FOR\n";
     
+    for (auto& p : players)
+    {
+        p->setStatus(State::NO_STATUS);
+    }
 
    
 
@@ -135,48 +139,35 @@ int main()
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 
-                  
-                    if (hit_btn.isClicked(mousePosition)) {
+
+                        // Check if the check button is clicked
+                        if (images[1]->isClicked(mousePosition)) {
+                            std::cout << "check clicked\n";
+                            takeAction(BUTTON::CHECK_BTN, players);
+                        }
+                        else if (images[2]->isClicked(mousePosition)) {
                         std::cout << "hit clicked\n";
-                       // p1->hit();
                         takeAction(BUTTON::HIT_BTN, players);
+                        }
 
-                       // p1.drawHand(window);
-                      //  window.display();
-                       // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-                    }
-
-                    // Check if the check button is clicked
-                    else if (check_btn.isClicked(mousePosition)) {
-                        std::cout << "check clicked\n";
-                       // p1->check();
-                       // 
-                        takeAction(BUTTON::CHECK_BTN, players);
-                      //  p1.drawHand(window);
-                       // window.display();
-                    }
-
-                    // Check if the double button is clicked
-                    else if (double_btn.isClicked(mousePosition)) {
-                        std::cout << "double clicked\n";
-
-                        takeAction(BUTTON::DOUBLE_BTN, players);
-                       // p1->double_down();
-                        //p1->drawHand(window);
-                       // window.display();
-                    }
-
-                    //std::cout << (int)p1.get_status()<< "\n";
-
-                    switch (p1->get_status())
-                    {
-                   // case State::BUST: std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
-                   // case State::CHECK: std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
-                   // case State::DOUBLE:  std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
-                    }
-                    p1->deck_interface->pop_card();
+                        // Check if the double button is clicked
+                        else if (images[3]->isClicked(mousePosition)) {
+                            std::cout << "double clicked\n";
+                            takeAction(BUTTON::DOUBLE_BTN, players);
+                        }
                    
+                        if (playerNum < players.size()) {
+                            switch (players[playerNum]->getStatus()) // incrementing playerNum and then using it
+                            {
+                            case State::BUST: playerNum++; break;
+                                // case State::CHECK: std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
+                                // case State::DOUBLE:  std::this_thread::sleep_for(std::chrono::milliseconds(3000)); break;
+                            }
+                            d.pop_card();
+                        }
+
+
+                    
                 }
             }
                
@@ -189,7 +180,7 @@ int main()
 
 
         drawScreen(window, images,players);
-        p1->drawHand(window);
+       // players[0]->drawHand(window);
 
 
         window.display();

@@ -5,8 +5,8 @@
 
 constexpr unsigned short NUM_CARDS_IN_DECK = 52;
 
-constexpr int SHIFT_X = -10; //-10
-constexpr int SHIFT_Y = -10; //-10
+constexpr int SHIFT_CARD_X = -10; //-10
+constexpr int SHIFT_CARD_Y = -10; //-10
 
 constexpr int ROTATION_ANG = 10; // 10
 
@@ -69,5 +69,8 @@ T& operator++(T& e) {
     e = static_cast<T>(temp);
     return e;
 }
+
+//template<typename N>
+//inline void print(N s) { std::cout << s << std::endl; }
 
 #endif // DEFINES_H
