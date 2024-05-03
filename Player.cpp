@@ -38,6 +38,7 @@ State Player::check() {
     if (_score == 0) {
         return State::NO_STATUS;
     }
+    _status = State::CHECK;
     return State::CHECK;
 }
 

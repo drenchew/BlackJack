@@ -54,10 +54,13 @@ void takeAction(BUTTON btn, std::vector<std::shared_ptr<Player>>& players)
     
     if (playerNum >= players.size()) { return; }
     
+    
     switch (btn)
     {
-    case BUTTON::HIT_BTN: 
-       if((players[playerNum]->getStatus() == State::DOUBLE)){return;}
+    case BUTTON::HIT_BTN:
+        if ((players[playerNum]->getStatus() == State::DOUBLE)  ||  
+           players[playerNum]->getStatus() == State::CHECK)
+        {return;}
         players[playerNum]->hit();
         break;
     case BUTTON::CHECK_BTN: players[playerNum]->check(); playerNum++;
@@ -90,7 +93,7 @@ int main()
    
 
     deck_thread.join();
-    d.test_deck();
+   // d.test_deck();
 
     for (size_t i = 0; i < 2; i++)
     {
@@ -117,11 +120,6 @@ int main()
     {
         p->setStatus(State::NO_STATUS);
     }
-
-   
-
-   
-    bool isButtonClicked = false;
 
 
    
