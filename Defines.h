@@ -71,6 +71,6 @@ T& operator++(T& e) {
 }
 
 //template<typename N>
-//inline void print(N s) { std::cout << s << std::endl; }
+// void print(std::string s) { std::cout << s << std::endl; }
 
 #endif // DEFINES_H

@@ -1,8 +1,15 @@
 #pragma once
+#ifndef PLAYER_H
+#define PLAYER_H
 
-#include "BaseGameLogic.h"
+
+
+
+
+#include "User.h"
 #include "Deck.h"
 #include"Balance.h"
+#include"User.h"
 
 class Player final : public User
 {
@@ -11,7 +18,7 @@ public:
     Player(Deck* deck, float x,float y,float rotation);
     virtual State hit() override final;
     virtual State check() override;
-    State double_down();
+   // State double_down();
 
     virtual void setStatus( const State state) 
     {
@@ -19,7 +26,7 @@ public:
     }
 
 
-    virtual void drawHand(sf::RenderWindow& window)
+    virtual void drawHand(sf::RenderWindow& window) override
     {
         int temp_x = _default_x, temp_y = _default_y;
         int temp_rot = _rotation;
@@ -36,13 +43,13 @@ public:
 
     virtual const State getStatus() const;
 
-    DeckInterface* deck_interface;
+   // DeckInterface* deck_interface;
 private:
     State determine_status();
 
- 
-    State _status;
     Balance _balance;
 
     bool double_on_off = false;
 };
+
+#endif // !PLAYER_H

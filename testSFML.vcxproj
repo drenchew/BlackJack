@@ -150,7 +150,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balance.h" />
-    <ClInclude Include="BaseGameLogic.h" />
+    <ClInclude Include="User.h" />
+    <ClInclude Include="Dealer.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="Deck.h" />

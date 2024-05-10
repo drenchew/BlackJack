@@ -1,8 +1,9 @@
 #include "Player.h"
 #include <iostream>
+#include"Deck.h"
 
-Player::Player(Deck* deck) : deck_interface(deck), _status(State::NO_STATUS) {
-    //lock_actions = false;
+Player::Player(Deck* deck) : User(deck) {
+   //_status = State::NO_STATUS;
 }
 
 Player::Player(Deck* deck, float x, float y,float rotation) : Player(deck) {
@@ -13,9 +14,10 @@ Player::Player(Deck* deck, float x, float y,float rotation) : Player(deck) {
 
 
 State Player::hit() {
+    
     // Implement hit logic
-    this->my_cards.emplace_back(this->deck_interface->view_card());
-    if (this->deck_interface->view_card()->get_symbol() == Symbols::ACE)
+    this->my_cards.emplace_back(deck_interface->view_card());
+    if (deck_interface->view_card()->get_symbol() == Symbols::ACE)
     {   ++_aces;
         _score += 11;
     }
@@ -42,14 +44,14 @@ State Player::check() {
     return State::CHECK;
 }
 
-State Player::double_down() {
-    hit();
-    if (_score < 21) {
-        _status = State::DOUBLE;
-    }
-
-    return State::DOUBLE;
-}
+//State Player::double_down() {
+//    hit();
+//    if (_score < 21) {
+//        _status = State::DOUBLE;
+//    }
+//
+//    return State::DOUBLE;
+//}
 
  const State Player::getStatus() const  {
      return _status;
