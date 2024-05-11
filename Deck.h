@@ -16,8 +16,10 @@ class DeckInterface
 public:
     virtual int total_cards() const = 0;
     virtual std::shared_ptr<Card> get_card() = 0;
-    virtual std::shared_ptr<Card> view_card() const = 0;
+    virtual std::shared_ptr<Card> view_card() = 0;
     inline virtual void pop_card() = 0;
+
+
     virtual ~DeckInterface() = default;
 };
 
@@ -37,8 +39,11 @@ public:
     }
 
     //!TEST CASES
+    
 
-    virtual int total_cards() const override {
+   
+
+    virtual int total_cards() const final override {
         return _deck.size();
     }
 
@@ -55,7 +60,7 @@ public:
         return card;
     }
 
-    virtual std::shared_ptr<Card> view_card() const override final {
+    virtual std::shared_ptr<Card> view_card()  override final {
         if (_deck.empty()) {
             return nullptr; // or throw std::out_of_range
         }

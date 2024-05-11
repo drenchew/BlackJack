@@ -20,13 +20,10 @@ public:
     virtual State check() override;
    // State double_down();
 
-    virtual void setStatus( const State state) 
-    {
-        _status = state;
-    }
 
 
-    virtual void drawHand(sf::RenderWindow& window) override
+
+    /*virtual void drawHand(sf::RenderWindow& window) override
     {
         int temp_x = _default_x, temp_y = _default_y;
         int temp_rot = _rotation;
@@ -39,9 +36,8 @@ public:
             card->setRotation(temp_rot);
             card->draw_card(window);
         }
-    }
+    }*/
 
-    virtual const State getStatus() const;
 
    // DeckInterface* deck_interface;
 private:

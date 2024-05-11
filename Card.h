@@ -11,17 +11,25 @@
 
 #include "Defines.h"
 
-class Card {
+class Card : public std::enable_shared_from_this<Card> {
 public:
-    Card() = delete;
+ 
     Card(const Symbols& symbol, const Suits& suit);
 
     const Suits& get_suit() const { return _suit; }
     const std::string& get_path() const { return _path; }
     const Symbols& get_symbol() const { return _symbol; }
 
+    std::shared_ptr<Card> flipCard() {
+        this->_cardTexture.loadFromFile(".\\assets\\cards\\back_black.png");
+        return shared_from_this();
+    }
+
+    
+
     int get_card_val() const {
-        if ((int)_symbol > 10) { return 10;}
+        if ((int)_symbol == 1 ) { return 11;}
+        else if ((int)_symbol >= 10) { return 10; }
         return (int)_symbol;
     }
     void setRotation(float ang) { _cardSprite.setRotation(ang); }

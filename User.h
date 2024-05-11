@@ -16,13 +16,36 @@ class User
 public:
 
     User(Deck* d) : deck_interface(d) {}
+
+    User(Deck* d,int x,int y, int rot) : deck_interface(d),
+        _default_x(x),_default_y(y),_rotation(rot),
+        _status(State::NO_STATUS)
+    {}
+
     User():deck_interface(NULL){}
 
+    // Pure Virtual
     virtual State hit() = 0;
-    virtual State check() = 0;
-    virtual const State getStatus() const = 0;
-    virtual void setStatus(const State state)  = 0;
-    virtual void drawHand(sf::RenderWindow& window) = 0;
+    virtual State check() = 0; 
+
+    virtual const State getStatus() const { return this->_status; }
+    virtual void setStatus(const State state) { _status = state; }
+
+    virtual void drawHand(sf::RenderWindow& window) {
+        int temp_x = _default_x,
+            temp_y = _default_y,
+            temp_rot = _rotation;
+
+        for (auto& card : my_cards)
+        {
+            card->setPosition(sf::Vector2f(temp_x, temp_y));
+            temp_x += SHIFT_CARD_X;
+            temp_y += SHIFT_CARD_Y;
+            temp_rot += ROTATION_ANG;
+            card->setRotation(temp_rot);
+            card->draw_card(window);
+        }
+    }
 
     virtual State double_down() {
         hit();
@@ -45,7 +68,7 @@ public:
     float _rotation = 0;
 protected:
 
-    State _status;
+     State _status;
      uint16_t _score = 0;
      uint16_t _aces = 0;
 
