@@ -1,9 +1,5 @@
 #include "Card.h"
 
-
-//Card::Card() : _symbol(Symbols::NO_SYMBOL), _suit(Suits::NO_SUIT) {}
-
-
 Card::Card(const Symbols& symbol, const Suits& suit) {
     _path = ".\\assets\\cards\\";
 
@@ -80,6 +76,8 @@ Card::Card(const Symbols& symbol, const Suits& suit) {
     try
     {
         _cardTexture.loadFromFile(_path);
+        this->_cardSprite.setScale(0.18, 0.18);
+        _cardTexture.setSmooth(true);
         _cardSprite.setTexture(_cardTexture);
         
     }
@@ -96,7 +94,7 @@ void Card::draw_card(sf::RenderWindow& window)  {
     //setRotation(59);
    // scale(0.9);
     //setPosition(sf::Vector2f(304, 66));
-    this->_cardSprite.setScale(0.18, 0.18);
+  //  this->_cardSprite.setScale(0.18, 0.18);
     window.draw(_cardSprite);
 
    

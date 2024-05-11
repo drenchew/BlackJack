@@ -10,6 +10,8 @@
 #include "Player.h"
 #include "Balance.h"
 
+#include"Dealer.h"
+
 
 
 typedef std::vector<std::shared_ptr<User>> UserVec;
@@ -21,8 +23,7 @@ void initPlayers(UserVec& players, Deck& d) {
     players.push_back(std::make_shared<Player>(&d, 490, 210, -10));
     players.emplace_back(std::make_shared<Player>(&d, 707, 137, -70));
 
-  //  players.emplace_back(std::make_shared<Dealer>(&d, 707, 137, -70));  // The Dealer
-
+    players.emplace_back(std::make_shared<Dealer>(&d, 490, 10, -10));  // The Dealer
 }
 
 void initImages(std::vector<std::shared_ptr<Image>>& images)
