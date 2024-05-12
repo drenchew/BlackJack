@@ -21,11 +21,10 @@ public:
     const Symbols& get_symbol() const { return _symbol; }
 
     std::shared_ptr<Card> flipCard() {
+       
         this->_cardTexture.loadFromFile(".\\assets\\cards\\back_black.png");
         return shared_from_this();
     }
-
-    
 
     int get_card_val() const {
         if ((int)_symbol == 1 ) { return 11;}
@@ -53,14 +52,5 @@ private:
     std::string _path;
 };
 
-namespace std {
-    template <>
-    struct hash<Card> {
-        size_t operator()(const Card& card) const {
-            return hash<int>()(static_cast<int>(card.get_symbol())) ^
-                hash<int>()(static_cast<int>(card.get_suit()));
-        }
-    };
-}
 
 #endif // !CARD_H

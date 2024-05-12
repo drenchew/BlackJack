@@ -1,15 +1,16 @@
 #include <SFML/Graphics.hpp>
+
 #include <thread>
 #include <mutex>
 #include <chrono>
 #include <exception>
+
 #include "Defines.h"
 #include "Card.h"
 #include "Deck.h"
 #include "Image.h"
 #include "Player.h"
 #include "Balance.h"
-
 #include"Dealer.h"
 
 
@@ -34,6 +35,17 @@ void initImages(std::vector<std::shared_ptr<Image>>& images)
     images.push_back(std::make_shared<Image>(BUTTON::DOUBLE_BTN));
 }
 
+
+
+void delearsTurn(UserVec& users) {
+   //auto dealer = std::static_pointer_cast<Dealer>(user);
+   const std::shared_ptr<Dealer> dealer  = std::static_pointer_cast<Dealer> ((users.back()));
+  // users.pop_back();
+
+   dealer->takeDecision(users);
+    
+}
+
 void drawScreen(sf::RenderWindow& window, std::vector<std::shared_ptr<Image>>& imgs,
     UserVec& players)
 {
@@ -43,6 +55,7 @@ void drawScreen(sf::RenderWindow& window, std::vector<std::shared_ptr<Image>>& i
     }
     for (auto& player : players)
     {
+        
         player->drawHand(window);
     }
 }
@@ -98,7 +111,8 @@ int main()
             player->drawHand(window);
             window.display();
 
-            //  std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for 2 seconds
+            //  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            //  // Sleep for 2 seconds
 
             player->deck_interface->pop_card();
         }
@@ -109,6 +123,7 @@ int main()
     for (auto& p : players)
     {
         p->setStatus(State::NO_STATUS);
+        
     }
 
     while (window.isOpen())
@@ -136,6 +151,19 @@ int main()
                     }
 
                     if (playerNum < players.size()) {
+                        //if its delers turn
+                        if (players.size() - 1 == playerNum)
+                        {
+                            delearsTurn(players);
+                            
+                            drawScreen(window, images, players);
+                            window.display();
+
+                            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                            return 7;              // round is over need to be started over
+                        }
+                      
+
                         if (players[playerNum]->getStatus() == State::BUST) { playerNum++; }
                         d.pop_card();
                     }
@@ -146,6 +174,8 @@ int main()
         drawScreen(window, images, players);
         window.display();
     }
+
+
 
     window.clear();
     std::cout << "BUSTED\n";
