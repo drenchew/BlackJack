@@ -35,6 +35,14 @@ public:
     virtual const State getStatus() const { return this->_status; }
     virtual void setStatus(const State state) { _status = state; }
 
+    void clearHand() { my_cards.clear(); }
+
+    void resetUser() {
+        this->_aces = 0;
+        this->_score = 0;
+        this->_status = State::NO_STATUS;
+    }
+
     virtual void drawHand(sf::RenderWindow& window) {
         int temp_x = _default_x,
             temp_y = _default_y,

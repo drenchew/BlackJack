@@ -15,6 +15,11 @@ class Card : public std::enable_shared_from_this<Card> {
 public:
  
     Card(const Symbols& symbol, const Suits& suit);
+    ~Card() { 
+        static int cardnum = 0;
+        printf("Desrtructor for Card\n");
+        std::cout << "cardnum: " << ++cardnum << *this << "\n";
+    }
 
     const Suits& get_suit() const { return _suit; }
     const std::string& get_path() const { return _path; }
@@ -49,7 +54,7 @@ private:
     Symbols _symbol;
     Suits _suit;
 
-    std::string _path;
+    std::string _path; 
 };
 
 

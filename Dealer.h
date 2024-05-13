@@ -35,6 +35,7 @@ public:
         while (_score < 17)
         {
             hit();
+            this->deck_interface->pop_card();
         }
         if (_score > 21) {
             payOffAllWinners(users);
@@ -44,6 +45,7 @@ public:
         while (getLoseProb(users) > 0.5 && _score < 21)
         {
             hit();
+            this->deck_interface->pop_card();
         }
 
         payOffAllWinners(users);
@@ -73,6 +75,7 @@ public:
             // test case only 
             this->my_cards.emplace_back(deck_interface->view_card());
         }
+       
 
         
         if (deck_interface->view_card()->get_symbol() == Symbols::ACE)
