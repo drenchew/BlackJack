@@ -25,11 +25,23 @@ public:
     User():deck_interface(NULL){}
 
     // Pure Virtual
+
+
+
     virtual State hit() = 0;
     virtual State check() = 0; 
 
+    virtual const uint16_t getScore() const { return this->_score; }
     virtual const State getStatus() const { return this->_status; }
     virtual void setStatus(const State state) { _status = state; }
+
+    void clearHand() { my_cards.clear(); }
+
+    void resetUser() {
+        this->_aces = 0;
+        this->_score = 0;
+        this->_status = State::NO_STATUS;
+    }
 
     virtual void drawHand(sf::RenderWindow& window) {
         int temp_x = _default_x,
@@ -45,6 +57,10 @@ public:
             card->setRotation(temp_rot);
             card->draw_card(window);
         }
+    }
+
+    void updare_balance(const float a) {
+
     }
 
     virtual State double_down() {

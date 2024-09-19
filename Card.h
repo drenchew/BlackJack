@@ -15,17 +15,21 @@ class Card : public std::enable_shared_from_this<Card> {
 public:
  
     Card(const Symbols& symbol, const Suits& suit);
+    ~Card() { 
+        static int cardnum = 0;
+        printf("Desrtructor for Card\n");
+        std::cout << "cardnum: " << ++cardnum << *this << "\n";
+    }
 
     const Suits& get_suit() const { return _suit; }
     const std::string& get_path() const { return _path; }
     const Symbols& get_symbol() const { return _symbol; }
 
     std::shared_ptr<Card> flipCard() {
+       
         this->_cardTexture.loadFromFile(".\\assets\\cards\\back_black.png");
         return shared_from_this();
     }
-
-    
 
     int get_card_val() const {
         if ((int)_symbol == 1 ) { return 11;}
@@ -50,17 +54,8 @@ private:
     Symbols _symbol;
     Suits _suit;
 
-    std::string _path;
+    std::string _path; 
 };
 
-namespace std {
-    template <>
-    struct hash<Card> {
-        size_t operator()(const Card& card) const {
-            return hash<int>()(static_cast<int>(card.get_symbol())) ^
-                hash<int>()(static_cast<int>(card.get_suit()));
-        }
-    };
-}
 
 #endif // !CARD_H
