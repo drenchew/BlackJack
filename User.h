@@ -38,6 +38,11 @@ public:
     void clearHand() { my_cards.clear(); }
 
     void resetUser() {
+
+       // delete deck_interface;
+      //  deck_interface = NULL;
+
+        clearHand();
         this->_aces = 0;
         this->_score = 0;
         this->_status = State::NO_STATUS;

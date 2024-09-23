@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "Balance.h"
 
-volatile int Game::playerNum = 0;
 
 Game::Game() : window(sf::VideoMode(1024, 720), "SFML works!") {}
 
@@ -24,7 +23,11 @@ void Game::initImages() {
 bool Game::delearsTurn() {
     const std::shared_ptr<Dealer>& dealer = std::static_pointer_cast<Dealer>(players.back());
     dealer->takeDecision(players);
-    //deck.pop_card();
+
+    dealer->flip_cards(true);
+
+ 
+    
     return true;
 }
 
@@ -34,6 +37,7 @@ void Game::drawScreen() {
     }
     for (auto& player : players) {
         player->drawHand(window);
+    
     }
 }
 
@@ -65,33 +69,38 @@ bool Game::takeAction(BUTTON btn) {
 
 void Game::restartGame()
 {
-   // Player* ptr = (Player*)players[0].get();
+    playerNum = 0;
 
     for (auto& user : players)
     {
-        user->clearHand();
         user->resetUser();
     }
     
     this->deck.reset_deck();
-   //deck.generate_deck2();
+
     window.clear();
     start();
 }
 
 
 void Game::start() {
-  //  window.clear();
     std::thread deck_thread(&Deck::generate_deck2, &deck);
-    initImages();
-    initPlayers();
+    std::thread init_thread(&Game::loadGame, this);
+  
     deck_thread.join();
 
     for (size_t i = 0; i < 2; i++) {
         for (auto& player : players) {
             drawScreen();
+            window.display();
+
             player->hit();
             player->drawHand(window);
+            // thread sleep
+            std::this_thread::sleep_for(std::chrono::milliseconds(400));
+           
+           if (init_thread.joinable()) { init_thread.join(); }
+            
             window.display();
             player->deck_interface->pop_card();
         }
@@ -115,7 +124,6 @@ void Game::start() {
 
                     if (images[1]->isClicked(mousePosition)) {
                         takeAction(BUTTON::CHECK_BTN);
-                       // deck.pop_card();
                     }
                     else if (images[2]->isClicked(mousePosition)) {
                         actionReturn = takeAction(BUTTON::HIT_BTN);
@@ -132,28 +140,40 @@ void Game::start() {
                     actionReturn = false;
                     if (playerNum < players.size()) {
                         
-
+                        
                         if (players.size() - 1 == playerNum) {
+                        EndGame:
                             delearsTurn();
+                            // show dealer cards at the end
+                            
+                            window.clear();
+
                             drawScreen();
                             window.display();
-                            std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-                           // restartGame();
-                           // throw;
+                            std::this_thread::sleep_for(std::chrono::milliseconds(1600));
+
+
+                            restartGame();
+                            throw;
                             return ;
                         }
 
-                        if (players[playerNum]->getStatus() == State::BUST) { playerNum++; }
+                        if ((players[playerNum]->getStatus() == State::BUST)) {
+                           playerNum ++;   
+                           if (playerNum == 3) {
+                               goto EndGame;
+                           }
+                           
+                        }
                         
                     }
                 }
             }
         }
-
+       
         drawScreen();
         window.display();
     }
 
     window.clear();
-    std::cout << "BUSTED\n";
 }
