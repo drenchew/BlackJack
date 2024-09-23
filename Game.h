@@ -19,7 +19,7 @@ private:
     Deck deck;
     std::vector<std::shared_ptr<Image>> images;
     std::vector<std::shared_ptr<User>> players;
-    static volatile int playerNum;
+     volatile int playerNum =0;
 
     void initPlayers();
     void initImages();

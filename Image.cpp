@@ -46,7 +46,7 @@ Image::Image(const BUTTON& btn,bool background) : _btn(btn) {
 }
 
 void Image::draw(sf::RenderWindow& window) {
- //   std::cout << "drawing smth\n";
+
     window.draw(bg_sprite);
 }
 

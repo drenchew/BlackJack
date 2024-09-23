@@ -17,16 +17,17 @@ public:
     Card(const Symbols& symbol, const Suits& suit);
     ~Card() { 
         static int cardnum = 0;
-        printf("Desrtructor for Card\n");
-        std::cout << "cardnum: " << ++cardnum << *this << "\n";
     }
 
     const Suits& get_suit() const { return _suit; }
     const std::string& get_path() const { return _path; }
     const Symbols& get_symbol() const { return _symbol; }
 
-    std::shared_ptr<Card> flipCard() {
-       
+    std::shared_ptr<Card> flipCard(bool face=false) {
+        if (face) {
+            this->_cardTexture.loadFromFile(this->_path);
+            return shared_from_this();
+        }
         this->_cardTexture.loadFromFile(".\\assets\\cards\\back_black.png");
         return shared_from_this();
     }

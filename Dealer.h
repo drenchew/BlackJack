@@ -63,9 +63,16 @@ public:
         return  (float)higherScore / allPlayers;
     }
      
+    void flip_cards(bool face) {
+        for (auto& card : my_cards)
+        {
+            card->flipCard(face);
+        }
+    }
+
     virtual State hit() override
     {
-        printf("in delaer hit\n"); 
+       
 
         if (my_cards.empty()) {
             this->my_cards.emplace_back(deck_interface->view_card());
@@ -73,10 +80,10 @@ public:
         else {
            // this->my_cards.emplace_back(deck_interface->view_card()->flipCard());
             // test case only 
-            this->my_cards.emplace_back(deck_interface->view_card());
+            this->my_cards.emplace_back(deck_interface->view_card()->flipCard());
+           
         }
-       
-
+        
         
         if (deck_interface->view_card()->get_symbol() == Symbols::ACE)
         {
