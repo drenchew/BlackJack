@@ -6,18 +6,18 @@ Game::Game() : window(sf::VideoMode(1024, 720), "SFML works!") {}
 
 void Game::initPlayers() {
     if (!players.empty()) { return; }
-    players.push_back(std::make_shared<Player>(&deck, 320, 66, 50));
-    players.push_back(std::make_shared<Player>(&deck, 490, 210, -10));
+    players.emplace_back(std::make_shared<Player>(&deck, 320, 66, 50));
+    players.emplace_back(std::make_shared<Player>(&deck, 490, 210, -10));
     players.emplace_back(std::make_shared<Player>(&deck, 707, 137, -70));
     players.emplace_back(std::make_shared<Dealer>(&deck, 490, 10, -10));  // The Dealer
 }
 
 void Game::initImages() {
     if (!images.empty()) { return; }
-    images.push_back(std::make_shared<Image>(BUTTON::UNKNOWN, true)); // background
-    images.push_back(std::make_shared<Image>(BUTTON::CHECK_BTN));
-    images.push_back(std::make_shared<Image>(BUTTON::HIT_BTN));
-    images.push_back(std::make_shared<Image>(BUTTON::DOUBLE_BTN));
+    images.emplace_back(std::make_shared<Image>(BUTTON::UNKNOWN, true)); // background
+    images.emplace_back(std::make_shared<Image>(BUTTON::CHECK_BTN));
+    images.emplace_back(std::make_shared<Image>(BUTTON::HIT_BTN));
+    images.emplace_back(std::make_shared<Image>(BUTTON::DOUBLE_BTN));
 }
 
 bool Game::delearsTurn() {
